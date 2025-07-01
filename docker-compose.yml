@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: shipay
+      POSTGRES_PASSWORD: shipay
+      POSTGRES_DB: shipay-database
+    volumes:
+      - ./data/pg:/data/postgres
+
