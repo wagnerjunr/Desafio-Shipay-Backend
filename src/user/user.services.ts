@@ -1,8 +1,8 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
-import type { PrismaService } from "src/database/prisma.service";
+import { PrismaService } from "src/database/prisma.service";
 
 @Injectable()
 export class UserService {
@@ -10,13 +10,12 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const { email, name, roleId } = createUserDto;
-
     const existingUser = await this.prisma.user.findFirst({
       where: { email: email },
     });
 
     if (existingUser) {
-      throw new ConflictException("Email já está em uso");
+      throw new BadRequestException("Email já está em uso");
     }
 
     const role = await this.prisma.role.findUnique({
@@ -24,7 +23,7 @@ export class UserService {
     });
 
     if (!role) {
-      throw new ConflictException("Papel de usuário não encontrado");
+      throw new BadRequestException("Papel de usuário não encontrado");
     }
 
     let password = createUserDto.password;
@@ -36,11 +35,10 @@ export class UserService {
 
     const user = await this.prisma.user.create({
       data: {
-        name: name,
-        email: email,
+        name,
+        email,
         password: hashedPassword,
-        roleId: roleId,
-        createdAt: new Date(),
+        roleId,
       },
       include: {
         role: true,
@@ -48,8 +46,7 @@ export class UserService {
     });
 
     return {
-      user,
-      messege: "Usuário criado com sucesso",
+      message: "Usuário criado com sucesso",
     };
   }
 
@@ -58,12 +55,30 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id: BigInt(id) },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roleId: true,
         role: true,
-        userClaims:true,
+        createdAt: true,
+        updatedAt: true,
+        userClaims: {
+          include: {
+            claim: true,
+          },
+        },
       },
     });
+    if (!user) {
+      throw new BadRequestException("Usuário não encontrado");
+    }
+    return {
+      ...user,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    };
   }
 }
