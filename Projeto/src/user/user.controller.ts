@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { UserService } from './user.services';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -14,5 +14,10 @@ export class UserController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
+  }
+
+  @Get(':id/test-sql')
+  async getUserWithPermissionsRaw(@Param('id') id: string) {
+    return this.userService.getUserWithPermissionsRawSQL(+id);
   }
 }

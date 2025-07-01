@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
-import { PrismaService } from "src/database/prisma.service";
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -80,5 +80,33 @@ export class UserService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
     };
+  }
+
+  async getUserWithPermissionsRawSQL(userId: number) {
+    try {
+      const result = await this.prisma.$queryRaw`
+        SELECT 
+            u.name AS nome,
+            u.email AS email,
+            r.description AS papel_descricao,
+            c.description AS permissao_descricao
+        FROM users u
+        INNER JOIN roles r ON u.role_id = r.id
+        LEFT JOIN user_claims uc ON u.id = uc.user_id
+        LEFT JOIN claims c ON uc.claim_id = c.id AND c.active = true
+        WHERE u.id = ${BigInt(userId)}
+        ORDER BY c.description
+      `;
+
+      if (!result || (Array.isArray(result) && result.length === 0)) {
+        throw new BadRequestException("Usuário não encontrado");
+      }
+
+      return {
+        data: result,
+      };
+    } catch (error) {
+      throw new BadRequestException(`Erro na consulta SQL: ${error.message}`);
+    }
   }
 }
