@@ -16,6 +16,11 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Get(':userId/role')
+  async userRoleById(@Param('userId') userId: string) {
+    return this.userService.userRoleById(+userId);
+  }
+
   @Get(':id/test-sql')
   async getUserWithPermissionsRaw(@Param('id') id: string) {
     return this.userService.getUserWithPermissionsRawSQL(+id);

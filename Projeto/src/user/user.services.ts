@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from "../database/prisma.service";
 
 @Injectable()
 export class UserService {
@@ -80,6 +80,21 @@ export class UserService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
     };
+  }
+
+  async userRoleById(userId: number) {
+    const userRole = await this.prisma.user.findUnique({
+      where: { id: BigInt(userId) },
+      select: {
+        name:true,
+        email: true,
+        role: true,
+      },
+    });
+    if (!userRole) {
+      throw new BadRequestException("Usuário não encontrado");
+    }
+    return userRole;
   }
 
   async getUserWithPermissionsRawSQL(userId: number) {
