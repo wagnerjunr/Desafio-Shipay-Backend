@@ -1,98 +1,139 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+         
+# Projeto - 1 a 5 Questões
+         
+# Backend - Desafio Shipay
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST desenvolvida com NestJS, Prisma ORM e PostgreSQL para gerenciamento de usuários, roles e permissões.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Tecnologias e Dependências Utilizadas
 
-## Description
+### Principais Dependências
+- **NestJS** (^11.0.1) - Framework Node.js para construção de aplicações server-side escaláveis
+- **Prisma** (^6.11.0) - ORM moderno para TypeScript e Node.js
+- **PostgreSQL** - Banco de dados relacional
+- **bcrypt** (^6.0.0) - Biblioteca para hash de senhas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Dependências de Desenvolvimento
+- **TypeScript** (^5.7.3) - Superset tipado do JavaScript
 
-## Project setup
+## 📋 Pré-requisitos
 
+- Node.js (versão 18 ou superior)
+- Docker e Docker Compose
+- npm ou yarn
+
+## 🔧 Como Rodar o Projeto
+
+### 1. Clone o repositório
 ```bash
-$ npm install
+git clone https://github.com/wagnerjunr/Desafio-Shipay-Backend.git
+cd Projeto
 ```
 
-## Compile and run the project
-
+### 2. Instale as dependências
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
-
+### 3. Configure o banco de dados
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+### 4. Configure as variáveis de ambiente
+Crie um arquivo `.env` na raiz do projeto:
+```env
+DATABASE_URL="postgresql://shipay:shipay@localhost:5432/shipay-database"
+PORT=3001
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 5. Execute as migrações do banco
+```bash
+npx prisma migrate dev
+```
 
-## Resources
+### 6. Gere o cliente Prisma
+```bash
+npx prisma generate
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 7. Inicie a aplicação
+```bash
+# Desenvolvimento
+npm run start:dev
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Produção
+npm run build
+npm run start:prod
+```
 
-## Support
+A API estará disponível em `http://localhost:3001`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 🏗️ Decisões de Arquitetura
 
-## Stay in touch
+### Estruturação das Rotas
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+A API foi estruturada seguindo os princípios RESTful e a arquitetura modular do NestJS:
 
-## License
+#### **Módulo Users** (`/users`)
+- `POST /users` - Criação de usuários
+- `GET /users/:id` - Busca usuário por ID
+- `GET /users/:id/test-sql` - Endpoint especial para consulta SQL raw
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+#### **Módulo Roles** (`/roles`)
+- `POST /roles` - Criação de roles
+- `GET /roles/:id` - Busca role por ID
+
+### Estruturação do Banco de Dados
+
+O banco foi modelado seguindo a estrutura do banco de dados fornecida.
+
+Obs: Algo que seria ideal melhorar seria a forma como os Ids são gerados, sendo atualmente o Id é gerado automaticamente pelo banco de dados de forma incremental, podendo acarretar erros.Uma forma de melhorar poderia ser colocar como String e gerar um UUID v4.
+Nesse projeto não foi implementado para que os testes fossem mais simples. 
+
+
+### Testes Manuais com API
+
+#### 1. Criar uma Role
+```bash
+curl -X POST http://localhost:3001/roles \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Admin"}'
+```
+
+#### 2. Criar um Usuário
+```bash
+curl -X POST http://localhost:3001/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "roleId": 1,
+    "password": "123456"
+  }'
+```
+
+#### 3. Buscar Usuário
+```bash
+curl http://localhost:3001/users/1
+```
+
+#### 4. Testar Consulta SQL Raw
+```bash
+curl http://localhost:3001/users/1/test-sql
+```
+
+### Ferramentas Recomendadas
+- **Postman** ou **Insomnia** para testes de API
+- **Prisma Studio** para visualizar dados: `npx prisma studio`
+
+## 🐳 Docker
+
+O projeto inclui um `docker-compose.yml` que configura:
+- PostgreSQL na porta 5432
+- Usuário: `shipay`
+- Senha: `shipay`
+- Database: `shipay-database`
+
+
+        
