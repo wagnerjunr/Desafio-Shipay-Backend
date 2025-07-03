@@ -25,12 +25,12 @@ class MailgunAdapter implements EmailService {
   }
 }
 ```
-# Vanstagens:
+### Vanstagens:
 - Facilita a integração de diferentes provedores
 - Permite a troca de provedores sem modificar o código existente
 - Você pode introduzir novos tipos de adaptadores no programa sem quebrar o código
 
-# Desvantagens:
+### Desvantagens:
 - A complexidade geral do código aumenta porque você precisa introduzir um conjunto de novas interfaces e classes.
 - Necessidade de criação de novos adaptadores para cada novo provedor
 

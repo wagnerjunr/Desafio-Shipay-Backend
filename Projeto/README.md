@@ -235,7 +235,7 @@ O projeto inclui um `docker-compose.yml` que configura:
 - Senha: `shipay`
 - Database: `shipay-database`
 
-### Deploy usando SST + AWS ECS + Fargate + Docker:
+# Deploy usando SST + AWS ECS + Fargate + Docker:
 
 ## O que é SST?
 
@@ -368,7 +368,7 @@ Após o deploy, você pode:
 - Configurar alertas no AWS CloudWatch para que seja notificado sobre problemas, questões de escalabilidade, valores, etc.
 
 
-#### Railway
+# Railway
 
 Railway é uma plataforma de deploy de aplicações. Ele permite que você crie, configure e deploy sua aplicação em poucos cliques.
 
