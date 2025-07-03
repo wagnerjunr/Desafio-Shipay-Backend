@@ -35,5 +35,13 @@ Revisão de código de um bot de exportação de dados, identificando vulnerabil
 - Ausência de tratamento de erros
 - Problemas de performance
 
+### 🏗️ Questão 8 - Padrões de Projeto para Normalização de Serviços
+Análise e proposta de padrões de projeto para normalizar serviços de terceiros, criando interfaces uniformes para diferentes fornecedores.
+
+**[Análise Completa](https://github.com/wagnerjunr/Desafio-Shipay-Backend/blob/main/8%20Quest%C3%A3o/README.md)**
+
+**Padrões propostos**:
+- **Adapter Pattern**: Para converter interfaces incompatíveis em uma interface comum
+- **Strategy Pattern**: Para alternar entre diferentes provedores em tempo de execução
 ---
         

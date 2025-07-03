@@ -235,3 +235,167 @@ O projeto inclui um `docker-compose.yml` que configura:
 - Senha: `shipay`
 - Database: `shipay-database`
 
+### Deploy usando SST + AWS ECS + Fargate + Docker:
+
+## O que é SST?
+
+SST (Serverless Stack Toolkit) é uma ferramenta moderna para construir aplicações full-stack na AWS. Ele permite definir sua infraestrutura como código usando TypeScript, facilitando o deploy e gerenciamento de recursos AWS como ECS, Lambda, S3, RDS, entre outros. 
+
+**Documentação oficial SST Nest.js:**https://sst.dev/docs/start/aws/nestjs/
+
+## Passo a Passo para Deploy
+
+### 1. Configurar AWS Credentials
+
+Antes de começar, você deve configurar as credenciais AWS no CLI local para que o SST tenha acesso à sua conta AWS.
+
+**Documentação oficial Credenciais:** https://sst.dev/docs/iam-credentials#credentials
+
+```bash
+aws configure
+```
+Você precisará fornecer (Necessário possuir uma conta AWS e ter permissões para criar recursos na AWS):
+- AWS Access Key ID
+- AWS Secret Access Key
+
+### 2. Inicializar SST e Configurar sst.config.ts
+
+```bash
+npx sst@latest init
+```
+
+Este comando criará o arquivo `sst.config.ts` na raiz do projeto. Configure-o com base nos serviços desejados:
+
+```typescript:sst.config.ts
+/// <reference path="./.sst/platform/config.d.ts" />
+export default {
+  app(input) {
+    return {
+      name: "nestjs-backend",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      home: "aws",
+    };
+  },
+  async run() {
+    const vpc = new sst.aws.Vpc("MyVpc");
+    const cluster = new sst.aws.Cluster("MyCluster", { vpc });
+
+    new sst.aws.Service("APIShipay", {
+      cluster,
+      memory: "1GB",
+      cpu: "1 vCPU",
+      port: 3001,
+      scaling: {
+        min: 1,
+        max: 10,
+      },
+      capacity: {
+        fargate: { bases: 1, weight: 0 },
+        spot: { weight: 1 },
+      },
+      loadBalancer: {
+        rules: [{ listen: "80/http", forward: "3001/http" }],
+      },
+      dev: {
+        command: "npm run start:dev",
+      },
+    });
+  },
+};
+
+```
+**Configurações de recursos:** Para esse deploy foi colocado de exemplo apenas fazendo o deploy na AWS ECS e Fargate.
+- **CPU**: Define a capacidade de processamento (0.25, 0.5, 1, 2, 4 vCPU)
+- **Memory**: Define a memória RAM (0.5 GB a 30 GB, dependendo da CPU)
+
+**Diferença entre Fargate e Spot:**
+- **Fargate**: Instâncias sob demanda, mais caras mas garantidas
+- **Spot**: Instâncias com desconto (até 90%), mas podem ser interrompidas pela AWS quando há alta demanda
+
+
+### 3. Ajustar o Dockerfile
+
+Crie ou ajuste o `Dockerfile` na raiz do projeto (configurar com base no projeto):
+
+```dockerfile:Dockerfile
+FROM node:22
+
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+EXPOSE 3001
+CMD ["node", "dist/main"]
+```
+
+### 4. Comandos para Build e Visualização
+
+#### Para desenvolvimento local:
+```bash
+npx sst dev
+```
+Este comando:
+- Inicia o SST em modo desenvolvimento
+- Roda sua aplicação localmente
+- Conecta com recursos AWS reais
+
+#### Para deploy em produção:
+```bash
+npx sst deploy --stage production
+```
+
+#### Para visualizar recursos criados:
+```bash
+npx sst console
+```
+Este comando abre o SST Console no navegador, onde você pode:
+- Visualizar todos os recursos AWS criados
+- Monitorar logs em tempo real
+- Gerenciar diferentes stages (dev, staging, production)
+
+#### Para remover recursos:
+```bash
+npx sst remove --stage production
+```
+### 5. Monitoramento
+
+Após o deploy, você pode:
+- Acessar a URL fornecida pelo SST
+- Monitorar logs via AWS CloudWatch
+- Usar o SST Console para debugging
+- Configurar alertas no AWS CloudWatch para que seja notificado sobre problemas, questões de escalabilidade, valores, etc.
+
+
+#### Railway
+
+Railway é uma plataforma de deploy de aplicações. Ele permite que você crie, configure e deploy sua aplicação em poucos cliques.
+
+#### Vanstagens
+
+Railway suporta vários provedores de hospedagem, como AWS, Google Cloud, DigitalOcean, etc.Além de ser uma forma rápida e facil de fazer deploy, com poucos configurações, é uma ótima opção para quem não quer se preocupar com a infraestrutura.
+
+#### Benefícios
+
+- Deploy rápido
+- Escalabilidade
+- Monitoramento
+- Backup
+- Segurança
+- Integração com outras ferramentas
+
+#### Desvantagens
+
+- Custo
+- Menos controle para projetos complexos
+- Limite de recursos
+
+
+#### Passo a Passo para Deploy
+
+1. Crie uma conta no Railway
+2. Crie um novo projeto
+3. Conecte o projeto ao repositório do GitHub
+4. Configure as variáveis de ambiente
+5. Deploy a aplicação
